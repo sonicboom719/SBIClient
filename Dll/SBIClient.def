@@ -1,0 +1,28 @@
+;DLL名（DLLのファイル名(拡張子は除く)と一致していないと、ビルド時に警告が出る）
+LIBRARY SBIClient
+
+;説明（有っても無くてもよい）
+;DESCRIPTION "SBI Client DLL"
+
+;エクスポートする関数
+EXPORTS
+	SBIInitialize
+	SBILogin
+	SBILogout
+	SBIGetAccountInfo
+	SBIGetStockPrice
+	SBISetOrderPassword
+	SBIGetLastOrderErrorDescr
+	SBICreateOrder
+	SBIReleaseOrder
+	SBISetOrderNariyuki
+	SBISetOrderSashine
+	SBISetOrderGSashine
+	SBISetOrderTrigger
+	SBISetOrderMargin
+	SBISetOrderAzukari
+	SBIStockOrder
+	SBIStockOrderModify
+	SBIStockOrderCancel
+	SBIGetStockOrderStatus
+
