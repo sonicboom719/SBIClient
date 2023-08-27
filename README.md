@@ -10,29 +10,24 @@ SBI証券のWebサイト(口座)にログインし、国内株(現物株およ�
 ビルドはVisual Studio 2017で行っています。
 動作確認はWindows10で行っています。
 使用に当たってはSBI証券の口座開設が必要です。信用取引を行う場合は信用取引の口座も必要です。
-DLLは32bit版です。
+付属のDLLは32bit版です。
 
 ## 含まれるファイル
-  SBIClient.dll    ライブラリ本体のWin32DLLです。
-  SBIClient.h      C言語用のヘッダーファイルです。
-  SBIClient.lib    インポートライブラリです。
-  Sample.c         使用例のC言語のサンプルコードです。
-  Sample.cs        使用例のC#のサンプルコードです。
-  Sample.vb        使用例のVBのサンプルコードです。
-  Sample.xls       使用例のVBAのサンプルマクロです。
+- SBIClient.dll    ライブラリ本体のWin32DLLです。
+- SBIClient.h      C言語用のヘッダーファイルです。
+- SBIClient.lib    インポートライブラリです。
+- Sample.c         使用例のC言語のサンプルコードです。
+- Sample.cs        使用例のC#のサンプルコードです。
+- Sample.vb        使用例のVBのサンプルコードです。
+- Sample.xls       使用例のVBAのサンプルマクロです。
 
 ## 使用方法
 サンプルコードおよびヘッダーファイル内のコメントを参照してください。
 サンプルコードでは、売買注文の発注などを行いますので、実行には十分注意してください。
 
 ## 既知の問題・制限事項
-・短時間の間に、注文(StockOrder)、訂正(StockOrderModify)、取消(StockOrderCancel)
-　、注文状態の取得(GetStockOrderStatus)などの操作を繰り返すと、多重リクエストエラー
-　(関数の戻り値は、SBI_MULTIPLE_REQUEST_ERROR)が発生する場合があることが分かっています。
-　回避策としては、連続してこれらの関数の呼び出しをする際は少し時間間隔を空ける
-　(数秒以上が目安)方法があります。
-・信用返済注文の場合、どの返済期日の建玉が返済対象として発注(StockOrder)されるかは
-　ライブラリが自動的に決定します。ユーザーがAPIから指定することは出来ません。
+- 短時間の間に、注文(StockOrder)、訂正(StockOrderModify)、取消(StockOrderCancel)、注文状態の取得(GetStockOrderStatus)などの操作を繰り返すと、多重リクエストエラー(関数の戻り値は、SBI_MULTIPLE_REQUEST_ERROR)が発生する場合があることが分かっています。回避策としては、連続してこれらの関数の呼び出しをする際は少し時間間隔を空ける　(数秒以上が目安)方法があります。
+- 信用返済注文の場合、どの返済期日の建玉が返済対象として発注(StockOrder)されるかはライブラリが自動的に決定します。ユーザーがAPIから指定することは出来ません。
 
 ## その他注意事項
 本ソフトウェアの性質上、SBI証券の都合により、Webサイトの仕様が変更された場合、
@@ -40,6 +35,6 @@ DLLは32bit版です。
 本ソフトウェアはSBI証券とは何ら関係がありませんので、本ソフトウェアに関して
 SBI証券に問い合わせすることはご遠慮ください。
 
-### 連絡先
-tsuru@sonicboom719.com
-http://www.sonicboom719.com/sbiclient
+## 連絡先
+- tsuru@sonicboom719.com
+- http://www.sonicboom719.com/sbiclient
