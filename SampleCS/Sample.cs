@@ -122,6 +122,7 @@ struct STOCKPRICES
     public double high;   //  高値
     public double low;    //  安値
     public double last;   //  現在値
+    public double volume; //  出来高
 }
 
 
@@ -143,9 +144,9 @@ class Sample
     [DllImport("SBIClient.dll")]
     static extern SBICode SBIGetAccountInfo(out ACCOUNTINFO accountInfo);
     [DllImport("SBIClient.dll")]
-    static extern SBICode SBIGetStockPrice(int code, out STOCKPRICES prices);
+    static extern SBICode SBIGetStockPrice(string code, out STOCKPRICES prices);
     [DllImport("SBIClient.dll")]
-    static extern IntPtr SBICreateOrder(Trade trade, Market market, int code, int quantity);
+    static extern IntPtr SBICreateOrder(Trade trade, Market market, string code, int quantity);
     [DllImport("SBIClient.dll")]
     static extern SBICode SBIStockOrder(IntPtr order, out int orderNumber);
     [DllImport("SBIClient.dll")]
@@ -177,10 +178,10 @@ class Sample
     /*****************************************************************************
         預かり口座コード
     *****************************************************************************/
-    public const string OA_GENERAL = "0";   //  一般預かり
-    //public const string OA_GENERAL = "-";   //  一般預かり(NISAあり)
     public const string OA_TOKUTEI = "0";   //  特定預かり
-    public const string OA_NISA = "4";      //  NISA預かり
+    public const string OA_GENERAL = "1";   //  一般預かり
+    public const string OA_NEW_NISA = "H";  //  NISA預かり
+    public const string OA_NISA = "4";      //  旧NISA預かり
 
     static void Main(string[] args)
     {
@@ -240,10 +241,10 @@ class Sample
         //------------------------------------------------------------------------
         //	リアルタイム株価を取得する
         //------------------------------------------------------------------------
-        if ((rc = SBIGetStockPrice(7201, out prices)) < 0)
+        if ((rc = SBIGetStockPrice("7201", out prices)) < 0)
             Console.WriteLine("GetStockPrice error = {0:d}", rc);
         else
-            Console.WriteLine("日産自動車の株価 現在値:{0:g} 始値:{1:g} 高値:{2:g} 安値:{3:g}", prices.last, prices.open, prices.high, prices.low);
+            Console.WriteLine("日産自動車の株価 現在値:{0:g} 始値:{1:g} 高値:{2:g} 安値:{3:g} 出来高:{4}", prices.last, prices.open, prices.high, prices.low, prices.volume);
 
         //------------------------------------------------------------------------
         //	取引パスワードを設定する
@@ -259,7 +260,7 @@ class Sample
         //		[執行条件] 指値(6000円)
         //		[預かり口座] 特定
         //------------------------------------------------------------------------
-        order = SBICreateOrder(Trade.MARGIN_BUY, Market.SOR, 7203, 100);
+        order = SBICreateOrder(Trade.MARGIN_BUY, Market.SOR, "7203", 100);
         SBISetOrderSashine(order, 6000, Cond.NOCOND);
         SBISetOrderAzukari(order, OA_TOKUTEI);
 
@@ -322,7 +323,7 @@ class Sample
         //		[執行条件] 指値(7000円引け指し)
         //		[預かり口座] 特定
         //------------------------------------------------------------------------
-        order = SBICreateOrder(Trade.MARGIN_SELL, Market.SOR, 9984, 100);
+        order = SBICreateOrder(Trade.MARGIN_SELL, Market.SOR, "9984", 100);
         SBISetOrderSashine(order, 7000, Cond.HIKESASHI);
         SBISetOrderAzukari(order, OA_TOKUTEI);
 
@@ -358,7 +359,7 @@ class Sample
         //		[執行条件] 逆指値(5800円)
         //		[預かり口座] NISA
         //------------------------------------------------------------------------
-        order = SBICreateOrder(Trade.BUY, Market.TOKYO, 6701, 1000);
+        order = SBICreateOrder(Trade.BUY, Market.TOKYO, "6701", 1000);
         SBISetOrderGSashine(order, 5800);
         SBISetOrderAzukari(order, OA_NISA);
 
@@ -394,7 +395,7 @@ class Sample
         //		[執行条件] トリガー価格480.7円以上になったら指値(470.2円)で執行
         //		[預かり口座] NISA
         //------------------------------------------------------------------------
-        order = SBICreateOrder(Trade.BUY, Market.SOR, 7201, 100);
+        order = SBICreateOrder(Trade.BUY, Market.SOR, "7201", 100);
         SBISetOrderSashine(order, 480.7, Cond.NOCOND);
         SBISetOrderTrigger(order, 470.2, TriggerZone.MORE);
         SBISetOrderAzukari(order, OA_NISA);

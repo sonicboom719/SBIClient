@@ -10,16 +10,17 @@ SBI証券のWebサイト(口座)にログインし、国内株(現物株およ�
 ビルドはVisual Studio 2017で行っています。
 動作確認はWindows10で行っています。
 使用に当たってはSBI証券の口座開設が必要です。信用取引を行う場合は信用取引の口座も必要です。
-付属のDLLは32bit版です。
 
 ## 含まれるファイル
 - SBIClient.dll    ライブラリ本体のWin32DLLです。
-- SBIClient.h      C言語用のヘッダーファイルです。
+- SBIClient.h	   C言語用のヘッダーファイルです。
 - SBIClient.lib    インポートライブラリです。
-- Sample.c         使用例のC言語のサンプルコードです。
-- Sample.cs        使用例のC#のサンプルコードです。
-- Sample.vb        使用例のVBのサンプルコードです。
-- Sample.xls       使用例のVBAのサンプルマクロです。
+- SBIClient64.dll  ライブラリ本体の64bit版DLLです。
+- SBIClient64.lib  64bit版のインポートライブラリです。
+- Sample.c		   使用例のC言語のサンプルコードです。
+- Sample.cs 	   使用例のC#のサンプルコードです。
+- Sample.vb 	   使用例のVBのサンプルコードです。
+- Sample.xls	   使用例のVBAのサンプルマクロです。
 
 ## 使用方法
 サンプルコードおよびヘッダーファイル内のコメントを参照してください。

@@ -66,11 +66,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	//------------------------------------------------------------------------
 	//	リアルタイム株価を取得する
 	//------------------------------------------------------------------------
-	if (( rc = SBIGetStockPrice( 7201, &prices )) < 0) {
+	if (( rc = SBIGetStockPrice( "7201", &prices )) < 0) {
 		printf("GetStockPrice error = %d\n", rc);
 	} else {
-		printf("日産自動車の株価 現在値:%g 始値:%g 高値:%g 安値:%g\n",
-						prices.last, prices.open, prices.high, prices.low);
+		printf("日産自動車の株価 現在値:%g 始値:%g 高値:%g 安値:%g 出来高:%.0f\n",
+						prices.last, prices.open, prices.high, prices.low, prices.volume);
 	}
 
 	//------------------------------------------------------------------------
@@ -87,7 +87,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//		[執行条件] 指値(6000円)
 	//		[預かり口座] 特定
 	//------------------------------------------------------------------------
-	order = SBICreateOrder( OD_MARGIN_BUY, OD_SOR, 7203, 100 );
+	order = SBICreateOrder( OD_MARGIN_BUY, OD_SOR, "7203", 100 );
 	SBISetOrderSashine( order, 6000, OD_NOCOND );
 	SBISetOrderAzukari( order, OA_TOKUTEI );
 
@@ -146,7 +146,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//		[執行条件] 指値(7000円引け指し)
 	//		[預かり口座] 特定
 	//------------------------------------------------------------------------
-	order = SBICreateOrder( OD_MARGIN_SELL, OD_SOR, 9984, 100 );
+	order = SBICreateOrder( OD_MARGIN_SELL, OD_SOR, "9984", 100 );
 	SBISetOrderSashine( order, 7000, OD_HIKESASHI );
 	SBISetOrderAzukari( order, OA_TOKUTEI );
 
@@ -180,7 +180,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//		[執行条件] 逆指値(5800円)
 	//		[預かり口座] NISA
 	//------------------------------------------------------------------------
-	order = SBICreateOrder( OD_BUY, OD_TOKYO, 6701, 1000 );
+	order = SBICreateOrder( OD_BUY, OD_TOKYO, "6701", 1000 );
 	SBISetOrderGSashine( order, 5800 );
 	SBISetOrderAzukari( order, OA_NISA );
 
@@ -214,7 +214,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//		[執行条件] トリガー価格480.7円以上になったら指値(470.2円)で執行
 	//		[預かり口座] NISA
 	//------------------------------------------------------------------------
-	order = SBICreateOrder( OD_BUY, OD_SOR, 7201, 100 );
+	order = SBICreateOrder( OD_BUY, OD_SOR, "7201", 100 );
 	SBISetOrderSashine( order, 480.7, OD_NOCOND );
 	SBISetOrderTrigger( order, 470.2, OD_MORE );
 	SBISetOrderAzukari( order, OA_NISA );

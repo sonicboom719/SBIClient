@@ -61,6 +61,7 @@ public:
 		double	high;		//!< 高値
 		double	low;		//!< 安値
 		double	current;	//!< 現在値
+		double  volume;		//!< 出来高
 	} STOCKPRICES;
 
      /********************************************************************//**
@@ -170,7 +171,7 @@ public:
 			@param brand [in] 銘柄コード
 			@return なし。
 		 ********************************************************************/
-		void SetBrandCode( int brand ) { m_brand_code = brand; }
+		void SetBrandCode( const char* brand ) { m_brand_code = brand; }
 
 		/*****************************************************************//**
 			取引する株数を設定する
@@ -271,7 +272,7 @@ public:
 	private:
 		int		m_trade;
 		int		m_market;
-		int		m_brand_code;
+		std::string	m_brand_code;
 		long	m_quantity;
 		int		m_nariyuki_cond;
 		int		m_sashine_cond;
@@ -331,7 +332,7 @@ public:
 		@return 成功するとゼロを返します。エラーの場合は負の値を返します。
 		@see enRETCODE
 	  ***********************************************************************/
-	int	GetRealtimeStockPrice( int code, STOCKPRICES* prices );
+	int	GetRealtimeStockPrice( const char* code, STOCKPRICES* prices );
 
      /********************************************************************//**
 		株の売買注文を発注する。

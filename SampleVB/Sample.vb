@@ -105,10 +105,10 @@
     '****************************************************************************
     '   預かり口座コード
     '****************************************************************************
-    Public Const OA_GENERAL = "1"   ' 一般預かり
-    'Public Const OA_GENERAL = "-"  '　一般預かり(NISAあり)
     Public Const OA_TOKUTEI = "0"   ' 特定預かり
-    Public Const OA_NISA = "4"      ' NISA預かり
+    Public Const OA_GENERAL = "1"   ' 一般預かり
+    Public Const OA_NEW_NISA = "H"  ' NISA預かり
+    Public Const OA_NISA = "4"      ' 旧NISA預かり
 
     '****************************************************************************
     '   構造体
@@ -120,10 +120,11 @@
     End Structure
 
     Public Structure STOCKPRICES
-        Public open As Double ' 始値
-        Public high As Double ' 高値
-        Public low As Double  ' 安値
-        Public last As Double ' 終値
+        Public open As Double    ' 始値
+        Public high As Double    ' 高値
+        Public low As Double     ' 安値
+        Public last As Double    ' 終値
+        Public volume As Double  ' 出来高
     End Structure
 
     '****************************************************************************
@@ -133,8 +134,8 @@
     Public Declare Function SBILogin Lib "SBIClient.dll" (ByVal username As String, ByVal password As String) As SBICode
     Public Declare Function SBILogout Lib "SBIClient.dll" () As SBICode
     Public Declare Function SBIGetAccountInfo Lib "SBIClient.dll" (ByRef accountInfo As ACCOUNTINFO) As SBICode
-    Public Declare Function SBIGetStockPrice Lib "SBIClient.dll" (ByVal code As Integer, ByRef prices As STOCKPRICES) As SBICode
-    Public Declare Function SBICreateOrder Lib "SBIClient.dll" (ByVal trade As Trade, ByVal market As Market, ByVal code As Integer, ByVal quantity As Long) As IntPtr
+    Public Declare Function SBIGetStockPrice Lib "SBIClient.dll" (ByVal code As String, ByRef prices As STOCKPRICES) As SBICode
+    Public Declare Function SBICreateOrder Lib "SBIClient.dll" (ByVal trade As Trade, ByVal market As Market, ByVal code As String, ByVal quantity As Long) As IntPtr
     Public Declare Function SBIStockOrder Lib "SBIClient.dll" (ByVal order As IntPtr, ByRef orderNumber As Integer) As SBICode
     Public Declare Function SBIStockOrderCancel Lib "SBIClient.dll" (ByVal orderNumber As Integer) As SBICode
     Public Declare Function SBIGetStockOrderStatus Lib "SBIClient.dll" (ByVal orderNumber As Integer, ByRef status As Status, ByRef execPrice As Double) As SBICode
@@ -210,11 +211,11 @@
         '------------------------------------------------------------------------
         '	リアルタイム株価を取得する
         '------------------------------------------------------------------------
-        rc = SBIGetStockPrice(7201, prices)
+        rc = SBIGetStockPrice("7201", prices)
         If (rc < 0) Then
             Console.WriteLine("GetStockPrice error = {0:d}", rc)
         Else
-            Console.WriteLine("日産自動車の株価 現在値:{0:g} 始値:{1:g} 高値:{2:g} 安値:{3:g}", prices.last, prices.open, prices.high, prices.low)
+            Console.WriteLine("日産自動車の株価 現在値:{0:g} 始値:{1:g} 高値:{2:g} 安値:{3:g} 出来高:{4}", prices.last, prices.open, prices.high, prices.low, prices.volume)
         End If
 
         '------------------------------------------------------------------------
@@ -231,7 +232,7 @@
         '		[執行条件] 指値(5800円)
         '       [預かり口座] 特定
         '------------------------------------------------------------------------
-        order = SBICreateOrder(Trade.MARGIN_BUY, Market.SOR, 7203, 100)
+        order = SBICreateOrder(Trade.MARGIN_BUY, Market.SOR, "7203", 100)
         SBISetOrderSashine(order, 5800, Cond.NOCOND)
         SBISetOrderAzukari(order, OA_TOKUTEI)
 
@@ -296,7 +297,7 @@
         '		[執行条件] 指値(9500円引け指し)
         '       [預かり口座] 特定
         '------------------------------------------------------------------------
-        order = SBICreateOrder(Trade.MARGIN_SELL, Market.SOR, 9984, 100)
+        order = SBICreateOrder(Trade.MARGIN_SELL, Market.SOR, "9984", 100)
         SBISetOrderSashine(order, 9500, Cond.HIKESASHI)
         SBISetOrderAzukari(order, OA_TOKUTEI)
 
@@ -333,7 +334,7 @@
         '		[執行条件] 逆指値(320円)
         '       [預かり口座] NISA
         '------------------------------------------------------------------------
-        order = SBICreateOrder(Trade.BUY, Market.TOKYO, 6701, 1000)
+        order = SBICreateOrder(Trade.BUY, Market.TOKYO, "6701", 1000)
         SBISetOrderGSashine(order, 320)
         SBISetOrderAzukari(order, OA_NISA)
 
@@ -370,7 +371,7 @@
         '		[執行条件] トリガー価格1000円以上になったら指値(980円)で執行
         '       [預かり口座] NISA
         '------------------------------------------------------------------------
-        order = SBICreateOrder(Trade.BUY, Market.SOR, 7201, 100)
+        order = SBICreateOrder(Trade.BUY, Market.SOR, "7201", 100)
         SBISetOrderSashine(order, 980, Cond.NOCOND)
         SBISetOrderTrigger(order, 1000, TriggerZone.MORE)
         SBISetOrderAzukari(order, OA_NISA)

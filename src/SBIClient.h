@@ -130,6 +130,7 @@ typedef struct stSTOCKPRICES {
 	double	high;		/* 高値 */
 	double	low;		/* 安値 */
 	double	last;		/* 現在値 */
+	double  volume;		/* 出来高 */
 } STOCKPRICES;
 
 typedef void* STOCKORDER;
@@ -194,7 +195,7 @@ SBICLIENT_API int STDCALL SBIGetAccountInfo( ACCOUNTINFO* accountInfo );
 	戻り値 成功するとゼロを返します。エラーの場合は負の値を返します。
 	参照 エラーコード一覧
 *****************************************************************************/
-SBICLIENT_API int STDCALL SBIGetStockPrice( int code, STOCKPRICES* prices );
+SBICLIENT_API int STDCALL SBIGetStockPrice( const char* code, STOCKPRICES* prices );
 
 /*****************************************************************************
 	取引パスワードを設定する。
@@ -240,7 +241,7 @@ SBICLIENT_API const char* STDCALL SBIGetLastOrderErrorDescr(void);
 	参照 取引種別コード
 	参照 取引市場コード
 *****************************************************************************/
-SBICLIENT_API STOCKORDER STDCALL SBICreateOrder( int trade, int market, int code, long quantity );
+SBICLIENT_API STOCKORDER STDCALL SBICreateOrder( int trade, int market, const char* code, long quantity );
 
 /*****************************************************************************
 	売買注文を解放する。

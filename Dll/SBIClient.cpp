@@ -13,7 +13,7 @@ int STDCALL SBIInitialize(void)
 {
 	int rest_days = 100;
 
-	gInitialized = true;
+	gInitialized = true;// CLicense::CanIUseThisSoftware(&rest_days);
 
 	return gInitialized ? rest_days : SBI_NOT_AVAILABLE;
 }
@@ -36,7 +36,7 @@ int STDCALL SBIGetAccountInfo( ACCOUNTINFO* accountInfo )
 	return gSbi.GetAccountInfo( (CSBIWebClient::ACCOUNTINFO*)accountInfo );
 }
 
-int STDCALL SBIGetStockPrice( int code, STOCKPRICES* prices )
+int STDCALL SBIGetStockPrice( const char* code, STOCKPRICES* prices )
 {
 	INITIALIZE_CHECK
 	return gSbi.GetRealtimeStockPrice( code, (CSBIWebClient::STOCKPRICES*)prices );
@@ -55,7 +55,7 @@ const char* STDCALL SBIGetLastOrderErrorDescr(void)
 	return errmsg;
 }
 
-STOCKORDER STDCALL SBICreateOrder( int trade, int market, int code, long quantity )
+STOCKORDER STDCALL SBICreateOrder( int trade, int market, const char* code, long quantity )
 {
 	CSBIWebClient::CStockOrder* pOrder = new CSBIWebClient::CStockOrder();
 

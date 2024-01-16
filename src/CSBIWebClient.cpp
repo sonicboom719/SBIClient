@@ -14,7 +14,7 @@ using namespace std;
 CSBIWebClient::CStockOrder::CStockOrder()
 	:	m_trade(BUY),
 		m_market(SOR),
-		m_brand_code(1000),
+		m_brand_code("1000"),
 		m_quantity(1),
 		m_nariyuki_cond(NO_COND),
 		m_sashine_cond(NO_COND),
@@ -139,7 +139,7 @@ int CSBIWebClient::GetAccountInfo( CSBIWebClient::ACCOUNTINFO* accountInfo )
 	return RET_SUCCESS;
 }
 
-int CSBIWebClient::GetRealtimeStockPrice( int code, CSBIWebClient::STOCKPRICES* prices )
+int CSBIWebClient::GetRealtimeStockPrice( const char* code, CSBIWebClient::STOCKPRICES* prices )
 {
 	if (!m_loggedin) return RET_NOT_LOGGEDIN;
 
@@ -155,7 +155,7 @@ int CSBIWebClient::GetRealtimeStockPrice( int code, CSBIWebClient::STOCKPRICES* 
 	params.Add( "i_output_type", "0" );	
 	params.Add( "i_dom_flg", "1" );	
 	params.Add( "getFlg", "on" );
-	params.Add( "i_stock_sec", IntToStr( code ) );	
+	params.Add( "i_stock_sec", code );	
 	params.Add( "i_stock_sec1", "" );	
 
 	if ((rc = m_httpClient.MethodPost( m_LoginURL.c_str(), NULL, params, &buffer )) < 0)
@@ -539,13 +539,25 @@ bool CSBIWebClient::ExtractRealtimePrice( CBuffer& buffer, CSBIWebClient::STOCKP
 			break;
 		case 7:
 			if (tokenType == CHtmlTokenizer::OTHER_TEXT) {
-				if (token == "ˆÀ’l")
+				if (token == "o—ˆ‚")
 					status = 8;
 			}
 			break;
 		case 8:
 			if (tokenType == CHtmlTokenizer::OTHER_TEXT) {
-				prices->low = atof2( token.c_str() );
+				prices->volume = atof2( token.c_str() );
+				status = 9;
+			}
+			break;
+		case 9:
+			if (tokenType == CHtmlTokenizer::OTHER_TEXT) {
+				if (token == "ˆÀ’l")
+					status = 10;
+			}
+			break;
+		case 10:
+			if (tokenType == CHtmlTokenizer::OTHER_TEXT) {
+				prices->low = atof2(token.c_str());
 				status = STATUS_SUCCESS;
 			}
 			break;
@@ -887,7 +899,7 @@ int CSBIWebClient::ExtractRepayLink( CBuffer& buffer,
 	int status = 0;
 	bool found = false;
 	int margin;
-	int brand_code;
+	string brand_code;
 	int brand_row_counter;
 	int buysell_row_counter;
 	int td_start_counter = 0;
@@ -939,7 +951,7 @@ int CSBIWebClient::ExtractRepayLink( CBuffer& buffer,
 			break;*/
 		case 4:
 			if (tokenType == CHtmlTokenizer::OTHER_TEXT) {
-				brand_code = atoi2( token.c_str() );
+				brand_code = token;
 				status = 5;
 			}
 			break;
@@ -1576,7 +1588,7 @@ void CSBIWebClient::SetOrderInfoToParams( int mode, const CStockOrder& order, CH
 	switch (mode) {
 	case MODE_NEW_ORDER:
 		params->Add( "trade_kbn", ToTradingFormCode( order.m_trade ) );
-		params->Add( "stock_sec_code", IntToStr( order.m_brand_code ) );
+		params->Add( "stock_sec_code", order.m_brand_code );
 		params->Add( "input_market", ToMarketFormCode( order.m_market ) );
 		params->Add( "input_quantity", LongToStr( order.m_quantity ) );
 		break;
